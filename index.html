@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IV Medication Reconstitution Reference</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .search-container {
+            margin-bottom: 20px;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        #searchInput:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .results-container {
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            text-align: left;
+            padding: 12px;
+            position: sticky;
+            top: 0;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        tr:hover {
+            background-color: #f5f7fa;
+        }
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .highlight {
+            background-color: #ffffcc;
+            font-weight: bold;
+        }
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .route-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 5px;
+            color: white;
+        }
+        .route-im {
+            background-color: #e74c3c;
+        }
+        .route-iv {
+            background-color: #3498db;
+        }
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px;
+            }
+            #searchInput {
+                padding: 10px;
+            }
+            .responsive-table {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>IV Medication Reconstitution Reference</h1>
+    
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Start typing medication name (at least 3 letters)..." autocomplete="off">
+    </div>
+    
+    <div class="responsive-table">
+        <div class="results-container">
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Medication</th>
+                        <th>Dosage</th>
+                        <th>Diluent</th>
+                        <th>Final Concentration</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                    <!-- Results will be populated here -->
+                </tbody>
+            </table>
+            <div id="noResults" class="no-results">Enter at least 3 characters to search</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>NWH Pharmacy IV Reconstitution Guideline - Reference Tool</p>
+        <p>Data last updated: June 20, 2023</p>
+    </footer>
+
+    <script>
+        // Medication data (paste your JSON object here)
+        const medicationData = {
+            
+  "title": "NWH Pharmacy IV Reconstitution Guideline",
+  "reference": ["Package Insert", "Lexi-Comp", "Micromedex"],
+  "medications": [
+    {
+      "drug": "ABATACEPT",
+      "dosage": "250 mg",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "25 mg/mL",
+      "comment": "Gentle swirl, Silicone-free syringe"
+    },
+    {
+      "drug": "ACETAZOLAMIDE",
+      "dosage": "500 MG",
+      "diluent": "5 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "ALLOPURINOL",
+      "dosage": "500 MG",
+      "diluent": "25 ML SWFI",
+      "final_concentration": "20 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "ALTEPLASE",
+      "dosage": "2 MG",
+      "diluent": "2.2 ML SWFI",
+      "final_concentration": "1 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "ALTEPLASE",
+      "dosage": "50 MG",
+      "diluent": "50 ML SWFI",
+      "final_concentration": "1 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "AMPHOTERICIN B",
+      "dosage": "50 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "5 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "AMPHOTERICIN B LIPOSOME",
+      "dosage": "50 MG",
+      "diluent": "12 ML SWFI",
+      "final_concentration": "4 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "AMPICILLIN",
+      "dosage": "250 MG",
+      "route": "IM",
+      "diluent": "1 ML SWFI",
+      "final_concentration": "250 mg/mL",
+      "comment": "Withdrawable volume 1 mL"
+    },
+    {
+      "drug": "AMPICILLIN",
+      "dosage": "500 MG",
+      "route": "IM",
+      "diluent": "1.8 ML SWFI",
+      "final_concentration": "250 mg/mL",
+      "comment": "Withdrawable volume 2 mL"
+    },
+    {
+      "drug": "AMPICILLIN",
+      "dosage": "1 GRAM",
+      "route": "IM",
+      "diluent": "3.5 ML SWFI",
+      "final_concentration": "250 mg/mL",
+      "comment": "Withdrawable volume 4 mL"
+    },
+    {
+      "drug": "AMPICILLIN",
+      "dosage": "2 GRAM",
+      "route": "IM",
+      "diluent": "6.8 ML SWFI",
+      "final_concentration": "250 mg/mL",
+      "comment": "Withdrawable volume 8 mL"
+    },
+    {
+      "drug": "AMPICILLIN",
+      "dosage": "1 GRAM",
+      "route": "IV",
+      "diluent": "7.4 ML SWFI",
+      "final_concentration": "500 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "AMPICILLIN",
+      "dosage": "2 GRAM",
+      "route": "IV",
+      "diluent": "14.8 ML SWFI",
+      "final_concentration": "500 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "AMPICILLIN-SULBACTAM",
+      "dosage": "1.5 GRAM",
+      "diluent": "3.2 ML SWFI",
+      "final_concentration": "375 mg/mL (250 mg of ampicillin/mL)",
+      "comment": ""
+    },
+    {
+      "drug": "AMPICILLIN-SULBACTAM",
+      "dosage": "3 GRAM",
+      "diluent": "6.4 ML SWFI",
+      "final_concentration": "375 mg/mL (250 mg of ampicillin/mL)",
+      "comment": ""
+    },
+    {
+      "drug": "AZITHROMYCIN",
+      "dosage": "500 MG",
+      "diluent": "4.8 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "AZTREONAM",
+      "dosage": "1 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "AZTREONAM",
+      "dosage": "2 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "200 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "BIVALIRUDIN",
+      "dosage": "250 MG",
+      "diluent": "5 ML SWFI",
+      "final_concentration": "50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFAZOLIN",
+      "dosage": "500 MG",
+      "diluent": "4.8 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFAZOLIN",
+      "dosage": "1 GRAM",
+      "diluent": "9.6 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFAZOLIN",
+      "dosage": "10 GRAM",
+      "diluent": "45 ML SWFI or 96 ML SWFI",
+      "final_concentration": "200 mg/mL or 100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFEPIME",
+      "dosage": "1 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFEPIME",
+      "dosage": "1 GRAM",
+      "route": "IM",
+      "diluent": "2.4 ML SWFI, NS, 1% lidocaine",
+      "final_concentration": "280 mg/mL",
+      "comment": "Withdraw 3.6mL"
+    },
+    {
+      "drug": "CEFEPIME",
+      "dosage": "2 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "160 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFIDEROCOL",
+      "dosage": "1 GRAM",
+      "diluent": "10 ML NS or D5W",
+      "final_concentration": "89.3 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "CEFOTAXIME",
+      "dosage": "1 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "95 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFOTAXIME",
+      "dosage": "1 GRAM",
+      "route": "IM",
+      "diluent": "3 ML SWFI",
+      "final_concentration": "300 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFOTAXIME",
+      "dosage": "2 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "180 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFOTAXIME",
+      "dosage": "500 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFOXITIN",
+      "dosage": "1 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "95 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFOXITIN",
+      "dosage": "2 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "180 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTAROLINE FOSAMIL",
+      "dosage": "600 MG",
+      "diluent": "20 ML SWFI",
+      "final_concentration": "30 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTAZIDIME",
+      "dosage": "1 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTAZIDIME",
+      "dosage": "2 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "170 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTAZIDIME/AVIBACTAM",
+      "dosage": "2.5 GM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "209 mg/mL (167 mg of Ceftazidime per mL+ 42 mg Avibactam per mL)",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTOLOZANE/TAZOBACTAM",
+      "dosage": "1.5 GM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "132 mg/ml (88 mg of CEFTOLOZANE per mL + 44 mg TAZOBACTAM per mL)",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTRIAXONE",
+      "dosage": "250 MG",
+      "diluent": "2.4 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTRIAXONE",
+      "dosage": "500 MG",
+      "diluent": "4.8 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTRIAXONE",
+      "dosage": "1 GRAM",
+      "diluent": "9.6 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTRIAXONE",
+      "dosage": "1 GRAM",
+      "route": "IM",
+      "diluent": "3.6 mL SWFI, NS, 1% lidocaine",
+      "final_concentration": "250 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTRIAXONE",
+      "dosage": "1 GRAM",
+      "route": "IM",
+      "diluent": "2.1 mL SWFI, NS, 1% lidocaine",
+      "final_concentration": "350 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTRIAXONE",
+      "dosage": "2 GRAM",
+      "diluent": "19.2 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTRIAXONE",
+      "dosage": "2 GRAM",
+      "route": "IM",
+      "diluent": "7.2 mL SWFI, NS, 1% lidocaine",
+      "final_concentration": "250 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFTRIAXONE",
+      "dosage": "2 GRAM",
+      "route": "IM",
+      "diluent": "4.2 mL SWFI, NS, 1% lidocaine",
+      "final_concentration": "350 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFUROXIME SODIUM",
+      "dosage": "750 MG",
+      "diluent": "8.3 ML SWFI",
+      "final_concentration": "90 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CEFUROXIME SODIUM",
+      "dosage": "1.5 GRAM",
+      "diluent": "16 ML SWFI",
+      "final_concentration": "90 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "COSYNTROPIN",
+      "dosage": "0.25 MG",
+      "route": "IM",
+      "diluent": "1 ML NS",
+      "final_concentration": "0.25 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "CHLOROTHIAZIDE SODIUM",
+      "dosage": "500 MG",
+      "diluent": "18 ML SWFI",
+      "final_concentration": "28 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "DALBAVANCIN",
+      "dosage": "500 MG",
+      "diluent": "25 ML SWFI or D5W",
+      "final_concentration": "20 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "DAPTOMYCIN",
+      "dosage": "350 MG",
+      "diluent": "7 ML NS",
+      "final_concentration": "50 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "DEFEROXAMINE",
+      "dosage": "500 MG",
+      "diluent": "5 ML SWFI",
+      "final_concentration": "95 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "DOXYCYCLINE HYCLATE",
+      "dosage": "100 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "10 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "EPOPROSTENOL (VELETRI)",
+      "dosage": "1.5 MG",
+      "diluent": "5 ML SWFI or NS",
+      "final_concentration": "300,000 ng/mL",
+      "comment": ""
+    },
+    {
+      "drug": "ERAVACYCLINE",
+      "dosage": "50 mg",
+      "diluent": "5 ML SWFI or NS",
+      "final_concentration": "10 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "ERAVACYCLINE",
+      "dosage": "100 mg",
+      "diluent": "5 ML SWFI or NS",
+      "final_concentration": "20 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "ERTAPENEM",
+      "dosage": "1 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "ERTAPENEM",
+      "dosage": "1 GRAM",
+      "route": "IM",
+      "diluent": "3.2 ML 1% lidocaine",
+      "final_concentration": "280 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "ERYTHROMYCIN",
+      "dosage": "500 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "FOSAPREPITANT",
+      "dosage": "150 MG",
+      "diluent": "5 ML SWFI NS",
+      "final_concentration": "30 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "GANCICLOVIR",
+      "dosage": "500MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "50MG/ML",
+      "comment": ""
+    },
+    {
+      "drug": "HYDROCORTISONE SOD SUCC",
+      "dosage": "100 MG",
+      "diluent": "2 ML SWFI Bacteriostatic water or bacteriostatic NS",
+      "final_concentration": "50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "HYDROXOCOBALAMIN",
+      "dosage": "5 GRAM",
+      "diluent": "200 ML NS",
+      "final_concentration": "25 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "IMIPENEM-CILASTATIN",
+      "dosage": "250 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "25 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "IMIPENEM-CILASTATIN",
+      "dosage": "500 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "IMIPENEM-CILASTATIN-RELEBACTAM",
+      "dosage": "500MG-250 MG",
+      "diluent": "10 ML NS/D5W x 2",
+      "final_concentration": "1250 mg/100 mL",
+      "comment": "see instruction"
+    },
+    {
+      "drug": "INDOMETHACIN",
+      "dosage": "1 MG",
+      "diluent": "2 ML NS or 1 ML NS",
+      "final_concentration": "0.5 mg/mL or 1 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "INFLIXIMAB",
+      "dosage": "100 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "10 mg/ml",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "INFLIXIMAB-DYYB",
+      "dosage": "100 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "10 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "ISAVUCONAZONIUM",
+      "dosage": "372 MG",
+      "diluent": "5 ML SWFI",
+      "final_concentration": "74.4 mg/ml",
+      "comment": ""
+    },
+    {
+      "drug": "LEUCOVORIN",
+      "dosage": "100 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "10 mg/ml",
+      "comment": ""
+    },
+    {
+      "drug": "LEUCOVORIN",
+      "dosage": "350 MG",
+      "diluent": "17.5 ML SWFI",
+      "final_concentration": "20 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "LEVOTHYROXINE",
+      "dosage": "100 MCG",
+      "diluent": "5 ML NS",
+      "final_concentration": "20 mcg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "LEVOTHYROXINE",
+      "dosage": "200 MCG",
+      "diluent": "5 ML NS",
+      "final_concentration": "40 mcg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "LEVOTHYROXINE",
+      "dosage": "500MCG",
+      "diluent": "5mL NS",
+      "final_concentration": "100 mcg/ml",
+      "comment": ""
+    },
+    {
+      "drug": "MEPOLIZUMAB",
+      "dosage": "100 MG",
+      "diluent": "1.2 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "MEROPENEM",
+      "dosage": "1 GRAM",
+      "diluent": "20 ML SWFI",
+      "final_concentration": "50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "MEROPENEM",
+      "dosage": "500 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "MEROPENEM-VABORBACTAM",
+      "dosage": "2 GRAM",
+      "diluent": "20 ML NS",
+      "final_concentration": "Meropenem 50 mg/mL + Vaborbactam 50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "METHYLPREDNISOLONE SODIUM SUCC",
+      "dosage": "1,000 MG",
+      "diluent": "16 ML SWFI bacteriostatic water with benzyl alcohol",
+      "final_concentration": "62.5 mg/mL",
+      "comment": "Neonate: reconstitute with preservative free SWFI only"
+    },
+    {
+      "drug": "METHYLPREDNISOLONE SODIUM SUCC",
+      "dosage": "500 MG",
+      "diluent": "8 ML SWFI bacteriostatic water with benzyl alcohol",
+      "final_concentration": "62.5 mg/mL",
+      "comment": "Neonate: reconstitute with preservative free SWFI only"
+    },
+    {
+      "drug": "MICAFUNGIN",
+      "dosage": "50 MG",
+      "diluent": "5 ML SWFI",
+      "final_concentration": "10 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "MICAFUNGIN",
+      "dosage": "100 MG",
+      "diluent": "5 ML SWFI",
+      "final_concentration": "20 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "MYCOPHENOLATE",
+      "dosage": "500 MG",
+      "diluent": "14 ML D5W",
+      "final_concentration": "35.7 mg/mL",
+      "comment": "Low-risk hazardous"
+    },
+    {
+      "drug": "NAFCILLIN",
+      "dosage": "2 GRAM",
+      "diluent": "6.6 ML SWFI",
+      "final_concentration": "250 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "OXACILLIN",
+      "dosage": "1 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "OXACILLIN",
+      "dosage": "2 GRAM",
+      "diluent": "20 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "PANTOPRAZOLE",
+      "dosage": "40 MG",
+      "diluent": "10 ML NS",
+      "final_concentration": "4 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "PENTAMIDINE",
+      "dosage": "300 MG",
+      "diluent": "5 ML SWFI",
+      "final_concentration": "60 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "PENICILLIN G POTASSIUM",
+      "dosage": "20 MILLION UNIT",
+      "diluent": "33 ML SWFI",
+      "final_concentration": "500,000 units/mL",
+      "comment": ""
+    },
+    {
+      "drug": "PENICILLIN G POTASSIUM",
+      "dosage": "5 MILLION UNIT",
+      "diluent": "8.2 ML SWFI",
+      "final_concentration": "500,000 units/mL",
+      "comment": ""
+    },
+    {
+      "drug": "PENICILLIN G SODIUM",
+      "dosage": "5 MILLION UNIT",
+      "diluent": "8 ML SWFI",
+      "final_concentration": "500,000 units/mL",
+      "comment": ""
+    },
+    {
+      "drug": "PIPERACILLIN-TAZOBACTAM",
+      "dosage": "2.25 GRAM",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "202.5 mg/ml (180 mg/mL of Piperacillin/22.5mg/mL tazobactam)",
+      "comment": ""
+    },
+    {
+      "drug": "PIPERACILLIN-TAZOBACTAM",
+      "dosage": "3.375 GRAM",
+      "diluent": "15 ML SWFI",
+      "final_concentration": "",
+      "comment": ""
+    },
+    {
+      "drug": "PIPERACILLIN-TAZOBACTAM",
+      "dosage": "4.5 GRAM",
+      "diluent": "20 ML SWFI",
+      "final_concentration": "",
+      "comment": ""
+    },
+    {
+      "drug": "POLYMYXIN B SULFATE",
+      "dosage": "500,000 UNIT",
+      "alt_dosage": "50 mg",
+      "diluent": "10 ML",
+      "final_concentration": "50,000 units/mL (5 mg/mL)",
+      "comment": ""
+    },
+    {
+      "drug": "PROTHROMBIN COMPLEX (FACTOR IX) CONCENTRATE (KCENTRA)",
+      "dosage": "500U vial",
+      "diluent": "20 ML SWFI",
+      "final_concentration": "See Package Insert",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "REMDESIVIR",
+      "dosage": "100 MG",
+      "diluent": "19 ML SWFI",
+      "final_concentration": "5 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "RIFAMPIN",
+      "dosage": "600 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "60 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "ROMIPLOSTIM",
+      "dosage": "250 MCG",
+      "diluent": "0.72 ML SWFI",
+      "final_concentration": "500 mcg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "SILTUXIMAB",
+      "dosage": "100 MG",
+      "diluent": "5.2 ML SWFI",
+      "final_concentration": "20 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "SILTUXIMAB",
+      "dosage": "400 MG",
+      "diluent": "20 ML SWFI",
+      "final_concentration": "20 mg/mL",
+      "comment": "Gentle Swirl"
+    },
+    {
+      "drug": "STREPTOMYCIN",
+      "dosage": "1 GRAM",
+      "route": "IM",
+      "diluent": "4.2 ML SWFI",
+      "final_concentration": "200 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "TEDIZOLID",
+      "dosage": "200 mg",
+      "diluent": "4 ML SWFI",
+      "final_concentration": "50 mg/mL",
+      "comment": "Gentle swirl, No invert"
+    },
+    {
+      "drug": "TELAVANCIN",
+      "dosage": "250 MG",
+      "diluent": "15 ML SWFI",
+      "final_concentration": "15 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "TELAVANCIN",
+      "dosage": "750 MG",
+      "diluent": "45 ML SWFI",
+      "final_concentration": "15 mg/ml",
+      "comment": ""
+    },
+    {
+      "drug": "TIGECYCLINE",
+      "dosage": "50 MG",
+      "diluent": "5.3 ML NS/D5W",
+      "final_concentration": "10 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "TOBRAMYCIN",
+      "dosage": "1.2 GRAM",
+      "specification": "PF",
+      "diluent": "30 ML SWFI",
+      "final_concentration": "40 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "VANCOMYCIN",
+      "dosage": "10 GRAM",
+      "diluent": "95 ML SWFI",
+      "final_concentration": "100 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "VANCOMYCIN",
+      "dosage": "5 GRAM",
+      "diluent": "100 ML SWFI",
+      "final_concentration": "50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "VANCOMYCIN",
+      "dosage": "500 MG",
+      "diluent": "10 mL SWFI",
+      "final_concentration": "50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "VANCOMYCIN",
+      "dosage": "750 MG",
+      "diluent": "15 ML SWFI",
+      "final_concentration": "50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "VANCOMYCIN",
+      "dosage": "1 GRAM",
+      "diluent": "20 mL SWFI",
+      "final_concentration": "50 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "VECURONIUM BROMIDE",
+      "dosage": "10 MG",
+      "diluent": "10 ML SWFI",
+      "final_concentration": "1 mg/mL",
+      "comment": ""
+    },
+    {
+      "drug": "VEDOLIZUMAB",
+      "dosage": "300 MG",
+      "diluent": "4.8 ML SWFI",
+      "final_concentration": "60 mg/mL",
+      "comment": "Gentle swirl"
+    }
+  ]
+
+        };
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const resultsBody = document.getElementById('resultsBody');
+        const noResults = document.getElementById('noResults');
+        const resultsTable = document.getElementById('resultsTable');
+
+        // Initially hide the table
+        resultsTable.style.display = 'none';
+
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.trim().toUpperCase();
+            
+            // Clear previous results
+            resultsBody.innerHTML = '';
+            
+            if (searchTerm.length < 3) {
+                noResults.textContent = 'Enter at least 3 characters to search';
+                noResults.style.display = 'block';
+                resultsTable.style.display = 'none';
+                return;
+            }
+            
+            // Filter medications based on search term
+            const filteredMeds = medicationData.medications.filter(med => 
+                med.drug.toUpperCase().includes(searchTerm)
+            );
+            
+            if (filteredMeds.length === 0) {
+                noResults.textContent = 'No medications found matching your search.';
+                noResults.style.display = 'block';
+                resultsTable.style.display = 'none';
+                return;
+            }
+            
+            // Display results
+            noResults.style.display = 'none';
+            resultsTable.style.display = 'table';
+            
+            filteredMeds.forEach(med => {
+                const row = document.createElement('tr');
+                
+                // Medication name with route badge if applicable
+                let medName = med.drug;
+                if (med.route) {
+                    medName += ` <span class="route-badge route-${med.route.toLowerCase()}">${med.route}</span>`;
+                }
+                
+                // Create row cells
+                row.innerHTML = `
+                    <td>${highlightMatch(medName, searchTerm)}</td>
+                    <td>${med.dosage}</td>
+                    <td>${med.diluent}</td>
+                    <td>${med.final_concentration}</td>
+                    <td>${med.comment || ''}</td>
+                `;
+                
+                resultsBody.appendChild(row);
+            });
+        });
+
+        // Helper function to highlight matching text
+        function highlightMatch(text, searchTerm) {
+            // For text with HTML (like when we have route badges)
+            if (text.includes('<span')) {
+                const drugName = text.split('<span')[0].trim();
+                const restOfText = text.substring(text.indexOf('<span'));
+                
+                const highlightedDrugName = drugName.replace(
+                    new RegExp(searchTerm, 'gi'),
+                    match => `<span class="highlight">${match}</span>`
+                );
+                
+                return highlightedDrugName + ' ' + restOfText;
+            }
+            
+            // For plain text
+            return text.replace(
+                new RegExp(searchTerm, 'gi'),
+                match => `<span class="highlight">${match}</span>`
+            );
+        }
+    </script>
+</body>
+</html>
